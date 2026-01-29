@@ -9,6 +9,7 @@ import { useState } from "react";
 const navLinks = [
   { name: "Cybersecurity", path: "/cybersecurity" },
   { name: "Software", path: "/software" },
+  { name: "LMS", path: "/lms" }, 
   { name: "Internships", path: "/internships" },
   { name: "Events", path: "/events" },
 ];

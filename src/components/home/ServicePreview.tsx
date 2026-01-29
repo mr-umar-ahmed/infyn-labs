@@ -1,79 +1,64 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Shield, Search, Lock, FileCheck, Terminal, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { cyberServices } from "@/src/lib/serviceData";
+import { softwareServices } from "@/src/lib/softwareData";
+import ServiceModal from "@/src/components/ui/ServiceModal";
 
-const services = [
-  {
-    title: "Security Audit & Assessment",
-    icon: Search,
-    desc: "Comprehensive analysis of your infrastructure to identify hidden vulnerabilities.",
-    link: "/cybersecurity/audit"
-  },
-  {
-    title: "Penetration Testing",
-    icon: Shield,
-    desc: "Ethical hacking simulations to stress-test your defenses before attackers do.",
-    link: "/cybersecurity/pentesting"
-  },
-  {
-    title: "Managed Security (MSSP)",
-    icon: Lock,
-    desc: "24/7 monitoring and incident response operations for enterprise environments.",
-    link: "/cybersecurity/mssp"
-  },
-  {
-    title: "Compliance & Consulting",
-    icon: FileCheck,
-    desc: "Aligning your operations with ISO 27001, GDPR, and industry standards.",
-    link: "/cybersecurity/compliance"
-  },
-  {
-    title: "Security for Developers",
-    icon: Terminal,
-    desc: "DevSecOps integration ensuring code is secure before deployment.",
-    link: "/cybersecurity/dev-security"
-  },
-  {
-    title: "Training & Awareness",
-    icon: Users,
-    desc: "Human-centric security training to mitigate social engineering risks.",
-    link: "/cybersecurity/training"
-  }
-];
+interface ServicePreviewProps {
+  title: string;
+  type: "cyber" | "software";
+  link: string;
+}
 
-export default function ServicePreview() {
+export default function ServicePreview({ title, type, link }: ServicePreviewProps) {
+  // State to track modal
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+
+  // Determine which dataset to use based on the 'type' prop
+  const dataSource = type === "cyber" ? cyberServices : softwareServices;
+  
+  // Get the 6 items for the grid
+  const services = Object.entries(dataSource).slice(0, 6);
+
+  // Get data for the active modal
+  const activeServiceData = selectedServiceId ? dataSource[selectedServiceId] : null;
+
   return (
-    <section className="py-24 bg-black">
+    <section className="py-24 bg-black border-t border-white/10">
       <div className="container mx-auto px-6">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div className="max-w-2xl">
             <h2 className="font-heading text-4xl font-bold mb-4 text-white">
-              Defensive <span className="text-brand-accent">Architecture</span>
+              {title}
             </h2>
             <p className="text-gray-400 text-lg">
-              We don&apost just patch holes; we redesign the fabric of your digital security. 
-              From passive monitoring to active defense.
+              {type === "cyber" 
+                ? "We don't just patch holes; we redesign the fabric of your digital security. From passive monitoring to active defense."
+                : "Building scalable, high-performance digital infrastructure. Engineered for security, designed for growth."
+              }
             </p>
           </div>
           
           <Link 
-            href="/cybersecurity" 
+            href={link} 
             className="group flex items-center gap-2 text-white font-medium hover:text-brand-accent transition-colors"
           >
-            View All Services <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            View All {type === "cyber" ? "Services" : "Solutions"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
         {/* Grid Layout */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, idx) => (
-            <Link 
-              key={idx} 
-              href={service.link}
-              className="group block p-8 bg-[#0A0A0A] border border-white/10 hover:border-brand-accent transition-colors duration-300 relative overflow-hidden"
+          {services.map(([key, service]) => (
+            <div 
+              key={key} 
+              onClick={() => setSelectedServiceId(key)} // Open Modal
+              className="group block p-8 bg-[#0A0A0A] border border-white/10 hover:border-brand-accent transition-colors duration-300 relative overflow-hidden cursor-pointer"
             >
               {/* Hover Glow Effect */}
               <div className="absolute inset-0 bg-brand-accent/5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -84,18 +69,28 @@ export default function ServicePreview() {
                 {service.title}
               </h3>
               
-              <p className="text-gray-500 leading-relaxed mb-6 relative z-10">
-                {service.desc}
+              {/* Description Handling */}
+              <p className="text-gray-500 leading-relaxed mb-6 relative z-10 line-clamp-3">
+                {/* @ts-expect-error - Handles legacy 'desc' property if present, otherwise uses 'whatIsIt' */}
+                {service.desc || service.whatIsIt}
               </p>
               
               <div className="flex items-center text-sm font-semibold text-white group-hover:translate-x-2 transition-transform relative z-10">
-                Learn more &rarr;
+                Quick View &rarr;
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 
       </div>
+
+      {/* The Modal Component */}
+      <ServiceModal 
+        isOpen={!!selectedServiceId} 
+        onClose={() => setSelectedServiceId(null)} 
+        service={activeServiceData} 
+      />
+
     </section>
   );
 }
