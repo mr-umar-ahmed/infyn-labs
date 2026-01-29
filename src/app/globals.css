@@ -2,13 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #050505;
-  --foreground: #FAFAFA;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    @apply bg-black text-white m-0 p-0 overflow-x-hidden;
+  }
 }

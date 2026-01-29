@@ -1,13 +1,17 @@
-"use client"; // Required for interactivity
+"use client";
 
 import { useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { cyberServices } from "@/src/lib/serviceData"; // Ensure this path matches yours
+import { cyberServices } from "@/src/lib/serviceData";
 import ServiceModal from "@/src/components/ui/ServiceModal";
+import ContactModal from "@/src/components/ui/ContactModal"; // <--- IMPORT THIS
 
 export default function CybersecurityPage() {
-  // State to track which modal is open
+  // State for Service Modal
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  
+  // State for Contact Modal
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   // Helper to get the full data object based on the key
   const activeServiceData = selectedService ? cyberServices[selectedService] : null;
@@ -15,7 +19,7 @@ export default function CybersecurityPage() {
   return (
     <main className="min-h-screen pt-32 pb-20 bg-background">
       
-      {/* Header (Unchanged) */}
+      {/* Header */}
       <section className="container mx-auto px-6 mb-24">
         <div className="max-w-4xl">
           <h1 className="font-heading text-5xl md:text-7xl font-bold mb-8 text-white">
@@ -34,7 +38,7 @@ export default function CybersecurityPage() {
           {Object.entries(cyberServices).map(([key, service]) => (
             <div 
               key={key}
-              onClick={() => setSelectedService(key)} // Open Modal on Click
+              onClick={() => setSelectedService(key)} // Open Service Modal
               className="group flex flex-col p-8 bg-[#0A0A0A] border border-white/10 hover:border-brand-accent/50 transition-all duration-300 rounded-sm cursor-pointer"
             >
               <div className="flex items-start justify-between mb-6">
@@ -63,11 +67,25 @@ export default function CybersecurityPage() {
         </div>
       </section>
 
-      {/* The Modal Component */}
+      {/* 1. Service Details Modal */}
       <ServiceModal 
         isOpen={!!selectedService} 
         onClose={() => setSelectedService(null)} 
-        service={activeServiceData} 
+        service={activeServiceData}
+        onRequestScope={() => {
+          // When they click "Request Scope":
+          // 1. Close this modal
+          setSelectedService(null);
+          // 2. Open the Contact Form
+          setIsContactOpen(true);
+        }}
+      />
+
+      {/* 2. Contact Form Modal */}
+      <ContactModal 
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+        defaultInterest={activeServiceData?.title || "Cybersecurity Service"}
       />
 
     </main>

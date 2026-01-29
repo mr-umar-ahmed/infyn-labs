@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { softwareServices } from "@/src/lib/softwareData"; // Import the new data
+import { softwareServices } from "@/src/lib/softwareData";
 import ServiceModal from "@/src/components/ui/ServiceModal";
+import ContactModal from "@/src/components/ui/ContactModal"; // <--- IMPORT
 
 export default function SoftwarePage() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [isContactOpen, setIsContactOpen] = useState(false); // <--- NEW STATE
+
   const activeServiceData = selectedService ? softwareServices[selectedService] : null;
 
   return (
@@ -60,11 +63,22 @@ export default function SoftwarePage() {
         </div>
       </section>
 
-      {/* Modal */}
+      {/* 1. Service Modal */}
       <ServiceModal 
         isOpen={!!selectedService} 
         onClose={() => setSelectedService(null)} 
-        service={activeServiceData} 
+        service={activeServiceData}
+        onRequestScope={() => {
+          setSelectedService(null);
+          setIsContactOpen(true);
+        }}
+      />
+
+      {/* 2. Contact Modal */}
+      <ContactModal 
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+        defaultInterest={activeServiceData?.title || "Software Solution"}
       />
       
     </main>

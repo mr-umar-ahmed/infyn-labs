@@ -23,7 +23,7 @@ export default function LMSPage() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
           </span>
-          SYSTEM KERNEL LOADING...
+          SYSTEM KERNEL LAUNCHING SOON...
         </div>
 
         {/* Main Title */}
