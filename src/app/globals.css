@@ -7,3 +7,18 @@
     @apply bg-black text-white m-0 p-0 overflow-x-hidden;
   }
 }
+/* Tech Stack Infinite Scroll */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  animation: marquee 30s linear infinite;
+}
+
+/* Pause on hover for better UX */
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

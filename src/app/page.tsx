@@ -1,4 +1,5 @@
 import Hero from "@/src/components/home/Hero";
+import TechStack from "@/src/components/home/TechStack";
 import DivisionSplit from "@/src/components/home/DivisionSplit";
 import ServicePreview from "@/src/components/home/ServicePreview";
 import AuthoritySection from "@/src/components/home/AuthoritySection";
@@ -10,27 +11,30 @@ export default function Home() {
       {/* 1. Hero Video Section */}
       <Hero />
 
-      {/* 2. The Division Split (Cyber vs Software) */}
+      {/* 2. Tech Stack */}
+      <TechStack />
+
+      {/* 3. The Division Split (Cyber vs Software) */}
       <DivisionSplit />
 
-      {/* 3. Cybersecurity Services Grid */}
-      <ServicePreview 
-        title="Defensive Architecture" 
-        type="cyber" 
+      {/* 4. Cybersecurity Services Grid */}
+      <ServicePreview
+        title="Defensive Architecture"
+        type="cyber"
         link="/cybersecurity"
       />
 
-      {/* 4. Software Services Grid */}
-      <ServicePreview 
-        title="Software Solutions" 
-        type="software" 
+      {/* 5. Software Services Grid */}
+      <ServicePreview
+        title="Software Solutions"
+        type="software"
         link="/software"
       />
 
-      {/* 5. Authority & Metrics */}
+      {/* 6. Authority & Metrics */}
       <AuthoritySection />
 
-      {/* 6. Final Call to Action */}
+      {/* 7. Final Call to Action */}
       <FinalCTA />
     </main>
   );
