@@ -2,7 +2,7 @@ import { createClient } from "next-sanity";
 import { NextResponse } from "next/server";
 
 const client = createClient({
-  projectId: "7gb9ayen",
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "7gb9ayen", // <--- FIXED
   dataset: "production",
   apiVersion: "2024-01-01",
   token: process.env.SANITY_WRITE_TOKEN,
@@ -23,12 +23,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    // Determine the error message safely without using 'any'
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-    
-    return NextResponse.json(
-      { error: errorMessage }, 
-      { status: 500 }
-    );
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

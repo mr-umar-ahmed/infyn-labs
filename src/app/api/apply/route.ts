@@ -1,8 +1,11 @@
 import { createClient } from "next-sanity";
 import { NextResponse } from "next/server";
 
+// Define dynamic to prevent static generation errors
+export const dynamic = 'force-dynamic';
+
 const client = createClient({
-  projectId: "7gb9ayen",
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "7gb9ayen", // <--- FIXED
   dataset: "production",
   apiVersion: "2024-01-01",
   token: process.env.SANITY_WRITE_TOKEN,
@@ -24,7 +27,6 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData();
 
-    // Extract + validate fields
     const payload: ApplicantPayload = {
       _type: "applicant",
       name: (formData.get("name") as string) || "",
@@ -37,50 +39,34 @@ export async function POST(req: Request) {
     };
 
     if (!payload.name || !payload.email) {
-      return NextResponse.json(
-        { error: "Name and email are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
     }
 
     const file = formData.get("resume");
 
-    if (!(file instanceof File) || file.size === 0) {
-      return NextResponse.json(
-        { error: "Valid resume file is required" },
-        { status: 400 }
-      );
+    // Handle file upload
+    let assetId = null;
+    if (file instanceof File && file.size > 0) {
+       const extension = file.name.split(".").pop() || "pdf";
+       const asset = await client.assets.upload("file", file, {
+         filename: `${payload.name.replace(/\s+/g, "_")}_resume.${extension}`,
+       });
+       assetId = asset._id;
     }
-
-    // Upload resume to Sanity
-    const extension = file.name.split(".").pop() || "pdf";
-
-    const asset = await client.assets.upload("file", file, {
-      filename: `${payload.name.replace(/\s+/g, "_")}_resume.${extension}`,
-    });
 
     // Create applicant document
     await client.create({
       ...payload,
-      resume: {
+      resume: assetId ? {
         _type: "file",
-        asset: {
-          _type: "reference",
-          _ref: asset._id,
-        },
-      },
+        asset: { _type: "reference", _ref: assetId },
+      } : undefined,
     });
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.error("Uplink Error:", error);
-
-    const message =
-      error instanceof Error ? error.message : "Transmission Failed";
-
-    return NextResponse.json(
-      { error: message },
-      { status: 500 }
-    );
+    const message = error instanceof Error ? error.message : "Transmission Failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
