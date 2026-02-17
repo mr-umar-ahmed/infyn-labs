@@ -3,10 +3,13 @@ export default {
   title: 'Internship Applicants',
   type: 'document',
   fields: [
-    { name: 'name', title: 'Full Name', type: 'string', readOnly: true },
-    { name: 'email', title: 'Email', type: 'string', readOnly: true },
-    { name: 'role', title: 'Applied Role', type: 'string', readOnly: true },
-    { name: 'resume', title: 'Resume/CV', type: 'file', readOnly: true },
-    { name: 'github', title: 'GitHub/Portfolio', type: 'url', readOnly: true },
+    { name: 'name', title: 'Full Name', type: 'string' },
+    { name: 'email', title: 'Email', type: 'string' },
+    { name: 'role', title: 'Applied Role', type: 'string' },
+    { name: 'linkedin', title: 'LinkedIn Profile', type: 'url' }, // New
+    { name: 'github', title: 'GitHub/Portfolio', type: 'url' },
+    { name: 'startDate', title: 'Earliest Start Date', type: 'date' }, // New
+    { name: 'resume', title: 'Resume (PDF)', type: 'file' },
+    { name: 'message', title: 'Statement of Purpose', type: 'text' }, // New
   ],
 }
